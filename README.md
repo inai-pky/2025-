@@ -103,7 +103,7 @@ void loop() {
   Serial.print(distance);
   Serial.println(" cm");
 
-  delay(500); // 0.5초 간격으로 측정
+  delay(500);
 }
 ```
 <br />
