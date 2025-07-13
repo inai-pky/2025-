@@ -50,10 +50,10 @@ void setColor(Color color) {
 void loop() {
 
   setColor(WHITE);
-  delay(1000);
+  delay(300);
 
   setColor(OFF);
-  delay(1000);
+  delay(300);
 }
 
 ```
