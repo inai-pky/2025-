@@ -10,6 +10,116 @@
 ### 기본동작 1
 ### 주어진 코드를 확인하고 필요 부품을 연결하고 코드를 업로드 하여 RGB LED가 정상 작동 하도록 하시오
 
+```arduino
+// RGB LED 각 핀에 연결된 아두이노 핀 번호를 정의합니다.
+// PWM 기능을 지원하는 핀을 사용해야 합니다 (보통 ~ 표시가 있는 핀).
+const int redPin = 9;    // 빨간색 LED 핀
+const int greenPin = 10; // 초록색 LED 핀
+const int bluePin = 11;  // 파란색 LED 핀
+
+// 색상 값을 저장할 구조체를 정의합니다 (선택 사항이지만 관리가 용이합니다).
+struct Color {
+  int r, g, b;
+};
+
+// 주요 색상들을 미리 정의합니다.
+const Color RED = {255, 0, 0};
+const Color GREEN = {0, 255, 0};
+const Color BLUE = {0, 0, 255};
+const Color YELLOW = {255, 255, 0};
+const Color MAGENTA = {255, 0, 255};
+const Color CYAN = {0, 255, 255};
+const Color WHITE = {255, 255, 255};
+const Color ORANGE = {255, 165, 0}; // 주황색 추가
+const Color OFF = {0, 0, 0};
+
+void setup() {
+  // 각 LED 핀을 출력으로 설정합니다.
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
+
+  // 시리얼 통신을 시작합니다 (선택 사항: 값 확인용).
+  Serial.begin(9600);
+}
+
+void loop() {
+  // 정의된 색상 변수를 사용하여 LED 색상을 변경합니다.
+
+  // 빨간색 밝게
+  setColor(RED);
+  delay(1000);
+
+  // 초록색 밝게
+  setColor(GREEN);
+  delay(1000);
+
+  // 파란색 밝게
+  setColor(BLUE);
+  delay(1000);
+
+  // 노란색
+  setColor(YELLOW);
+  delay(1000);
+
+  // 흰색
+  setColor(WHITE);
+  delay(1000);
+
+  crossFade(BLUE, YELLOW, 2000);
+  delay(500);
+
+  // LED 끄기
+  setColor(OFF);
+  delay(1000);
+}
+
+// RGB 색상을 설정하는 함수 (Color 구조체 사용)
+void setColor(Color color) {
+  // analogWrite 함수를 사용하여 각 LED의 밝기를 PWM으로 제어합니다.
+  // (예: analogWrite(redPin, 255 - color.r);)
+  analogWrite(redPin, color.r);
+  analogWrite(greenPin, color.g);
+  analogWrite(bluePin, color.b);
+
+  // 현재 색상 값을 시리얼 모니터에 출력합니다 (선택 사항).
+  Serial.print("R: ");
+  Serial.print(color.r);
+  Serial.print(" G: ");
+  Serial.print(color.g);
+  Serial.print(" B: ");
+  Serial.println(color.b);
+}
+
+void crossFade(Color fromColor, Color toColor, int duration) {
+  int steps = 100; // 그라데이션 단계 수 (많을수록 부드러움)
+  int stepDelay = duration / steps; // 각 단계별 지연 시간
+
+  // 각 색상 채널별 변화량 계산
+  float rStep = (float)(toColor.r - fromColor.r) / steps;
+  float gStep = (float)(toColor.g - fromColor.g) / steps;
+  float bStep = (float)(toColor.b - fromColor.b) / steps;
+
+  Serial.println("Fading..."); // 그라데이션 시작 알림
+
+  for (int i = 0; i <= steps; i++) {
+    Color currentColor;
+    currentColor.r = fromColor.r + (int)(rStep * i);
+    currentColor.g = fromColor.g + (int)(gStep * i);
+    currentColor.b = fromColor.b + (int)(bStep * i);
+
+    // 값 범위 보정 (0 ~ 255)
+    currentColor.r = constrain(currentColor.r, 0, 255);
+    currentColor.g = constrain(currentColor.g, 0, 255);
+    currentColor.b = constrain(currentColor.b, 0, 255);
+    
+    setColor(currentColor); // 중간 색상 설정
+    delay(stepDelay);
+  }
+  setColor(toColor); // 최종 색상으로 정확히 설정
+  Serial.println("Fade Complete."); // 그라데이션 완료 알림
+}
+```
 ### 기본동작 2
 ### 초록 3초 -> 주황 1초 -> 빨강 3초 
 ### RGB LED가 위 순서대로 계속 반복하여 켜지도록 코드를 작성하고 업로드 하시오
