@@ -64,6 +64,47 @@ void loop() {
 ### 응용동작 1
 ### 주어진 코드를 참고하여 초음파 센서를 연결하고 센싱값을 시리얼 모니터로 확인하시오
 
+```C++
+// HC-SR04 초음파 센서 핀 설정
+const int trigPin = 9; // Trig 핀을 디지털 9번에 연결
+const int echoPin = 10; // Echo 핀을 디지털 10번에 연결
+
+void setup() {
+  // 시리얼 통신 시작 (속도: 9600)
+  Serial.begin(9600); 
+  
+  // 핀 모드 설정
+  pinMode(trigPin, OUTPUT); // Trig 핀은 출력용
+  pinMode(echoPin, INPUT);  // Echo 핀은 입력용
+}
+
+void loop() {
+  long duration, distance;
+
+  // 1. Trig 핀으로 초음파 발사 신호 보내기
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10); // 10마이크로초 동안 HIGH 신호 유지
+  digitalWrite(trigPin, LOW);
+
+  // 2. Echo 핀으로 초음파가 돌아오는 시간(duration) 측정
+  // pulseIn() 함수는 핀이 HIGH 상태를 유지하는 시간을 마이크로초 단위로 반환합니다.
+  duration = pulseIn(echoPin, HIGH); 
+  
+  // 3. 측정된 시간을 거리(cm)로 변환
+  // 소리의 속도(340m/s)와 왕복 시간을 고려한 계산식
+  distance = duration * 0.034 / 2;
+
+  // 4. 시리얼 모니터에 결과 출력
+  Serial.print("거리: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  delay(500); // 0.5초 간격으로 측정
+}
+```
+
 ### 응용동작 2 
 ### 초음파 센서를 활용하여 초음파 센서가 10cm 이하의 값을 센싱하면 아래의 순서도에 따라 신호등을 제어하시오
 ### 빨강 -> 센싱후 2초 후 초록으로 전환 -> 초록 3초 -> 빨강
