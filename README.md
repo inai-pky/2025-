@@ -23,15 +23,8 @@ struct Color {
 };
 
 // 주요 색상들을 미리 정의합니다.
-const Color RED = {255, 0, 0};
-const Color GREEN = {0, 255, 0};
-const Color BLUE = {0, 0, 255};
-const Color YELLOW = {255, 255, 0};
-const Color MAGENTA = {255, 0, 255};
-const Color CYAN = {0, 255, 255};
+
 const Color WHITE = {255, 255, 255};
-const Color ORANGE = {255, 165, 0}; // 주황색 추가
-const Color OFF = {0, 0, 0};
 
 void setup() {
   // 각 LED 핀을 출력으로 설정합니다.
@@ -41,37 +34,6 @@ void setup() {
 
   // 시리얼 통신을 시작합니다 (선택 사항: 값 확인용).
   Serial.begin(9600);
-}
-
-void loop() {
-  // 정의된 색상 변수를 사용하여 LED 색상을 변경합니다.
-
-  // 빨간색 밝게
-  setColor(RED);
-  delay(1000);
-
-  // 초록색 밝게
-  setColor(GREEN);
-  delay(1000);
-
-  // 파란색 밝게
-  setColor(BLUE);
-  delay(1000);
-
-  // 노란색
-  setColor(YELLOW);
-  delay(1000);
-
-  // 흰색
-  setColor(WHITE);
-  delay(1000);
-
-  crossFade(BLUE, YELLOW, 2000);
-  delay(500);
-
-  // LED 끄기
-  setColor(OFF);
-  delay(1000);
 }
 
 // RGB 색상을 설정하는 함수 (Color 구조체 사용)
@@ -91,34 +53,18 @@ void setColor(Color color) {
   Serial.println(color.b);
 }
 
-void crossFade(Color fromColor, Color toColor, int duration) {
-  int steps = 100; // 그라데이션 단계 수 (많을수록 부드러움)
-  int stepDelay = duration / steps; // 각 단계별 지연 시간
+void loop() {
+  // 정의된 색상 변수를 사용하여 LED 색상을 변경합니다.
 
-  // 각 색상 채널별 변화량 계산
-  float rStep = (float)(toColor.r - fromColor.r) / steps;
-  float gStep = (float)(toColor.g - fromColor.g) / steps;
-  float bStep = (float)(toColor.b - fromColor.b) / steps;
+  // 빨간색 밝게
+  setColor(WHITE);
+  delay(1000);
 
-  Serial.println("Fading..."); // 그라데이션 시작 알림
-
-  for (int i = 0; i <= steps; i++) {
-    Color currentColor;
-    currentColor.r = fromColor.r + (int)(rStep * i);
-    currentColor.g = fromColor.g + (int)(gStep * i);
-    currentColor.b = fromColor.b + (int)(bStep * i);
-
-    // 값 범위 보정 (0 ~ 255)
-    currentColor.r = constrain(currentColor.r, 0, 255);
-    currentColor.g = constrain(currentColor.g, 0, 255);
-    currentColor.b = constrain(currentColor.b, 0, 255);
-    
-    setColor(currentColor); // 중간 색상 설정
-    delay(stepDelay);
-  }
-  setColor(toColor); // 최종 색상으로 정확히 설정
-  Serial.println("Fade Complete."); // 그라데이션 완료 알림
+  // LED 끄기
+  setColor(OFF);
+  delay(1000);
 }
+
 ```
 ### 기본동작 2
 ### 초록 3초 -> 주황 1초 -> 빨강 3초 
