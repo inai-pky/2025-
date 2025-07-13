@@ -17,34 +17,28 @@ const int redPin = 9;    // 빨간색 LED 핀
 const int greenPin = 10; // 초록색 LED 핀
 const int bluePin = 11;  // 파란색 LED 핀
 
-// 색상 값을 저장할 구조체를 정의합니다 (선택 사항이지만 관리가 용이합니다).
+
 struct Color {
   int r, g, b;
 };
 
-// 주요 색상들을 미리 정의합니다.
-
 const Color WHITE = {255, 255, 255};
+const Color OFF = {0, 0, 0};
 
 void setup() {
-  // 각 LED 핀을 출력으로 설정합니다.
+
   pinMode(redPin, OUTPUT);
   pinMode(greenPin, OUTPUT);
   pinMode(bluePin, OUTPUT);
 
-  // 시리얼 통신을 시작합니다 (선택 사항: 값 확인용).
   Serial.begin(9600);
 }
 
-// RGB 색상을 설정하는 함수 (Color 구조체 사용)
 void setColor(Color color) {
-  // analogWrite 함수를 사용하여 각 LED의 밝기를 PWM으로 제어합니다.
-  // (예: analogWrite(redPin, 255 - color.r);)
   analogWrite(redPin, color.r);
   analogWrite(greenPin, color.g);
   analogWrite(bluePin, color.b);
 
-  // 현재 색상 값을 시리얼 모니터에 출력합니다 (선택 사항).
   Serial.print("R: ");
   Serial.print(color.r);
   Serial.print(" G: ");
@@ -54,13 +48,10 @@ void setColor(Color color) {
 }
 
 void loop() {
-  // 정의된 색상 변수를 사용하여 LED 색상을 변경합니다.
 
-  // 빨간색 밝게
   setColor(WHITE);
   delay(1000);
 
-  // LED 끄기
   setColor(OFF);
   delay(1000);
 }
